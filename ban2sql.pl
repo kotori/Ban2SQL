@@ -34,15 +34,12 @@ use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 my $home = '/etc/fail2ban/ban2sql';
 
 # Path to the GeoLiteCity.dat database from MaxMind.
-# default: http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
 my $url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 
 # Filename to use when extracting. (should be obvious from the url)
-# default: $home . '/GeoLiteCity.dat.gz'
 my $file = $home . '/GeoLiteCity.dat.gz';
 
 # Filename to use when extracted. (if you are using geolite city, keep this value as is)
-# default: $home . '/GeoLiteCity.dat'
 my $final = $home . '/GeoLiteCity.dat';
 
 # MySQL variables
