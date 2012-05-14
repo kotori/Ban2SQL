@@ -49,8 +49,8 @@ Usage
 Notes
 =====
 
-Incase its not immediately obvious, here is a breakdown of house the database is built.
-This might be handy incase you would like to tweak the application.
+Incase its not immediately obvious, here is a breakdown of how the database is built.
+This might be handy incase you would like to tweak the application (add db rows, etc).
 
 MySQL Database Row Chart
 Row ID    Row Name         Row Meaning
@@ -73,3 +73,4 @@ Contact/Credits
 ===============
 Ban2SQL v2.0 by Kotori <kotori@greenskin.hopto.org>
 Based off of Fail2SQL v1.0 by Jordan Tomkinson <jordan@moodle.com>
+Project Page: https://github.com/kotori/Ban2SQL
