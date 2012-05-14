@@ -51,8 +51,8 @@ my $table = 'ban2sql';		# table containing bans.
 
 #### end user config ####
 
-if (@ARGV ge 1) {
-  if ($ARGV[0] eq "-i" ) {
+if ( @ARGV ge 1 ) {
+  if ( $ARGV[0] eq "-i" ) {
     # This should really only occur if Fail2Ban calls it, however you can also use -i to manually enter in a ban.
     # /etc/fail2ban/ban2sql/ban2sql.pl -i <name> <protocol> <port> <ip>
 
@@ -102,7 +102,7 @@ if (@ARGV ge 1) {
     $dbh->disconnect;
 
   }
-  elsif ($ARGV[0] eq "-l") {
+  elsif ( $ARGV[0] eq "-l" ) {
     #connect to MySQL database
     my $dbh = DBI->connect("DBI:mysql:database=$db:host=$host", $user, $pw)
       or die "Can't connect to database: $DBI::errstr \n";
@@ -125,7 +125,7 @@ if (@ARGV ge 1) {
     $sth->finish;
     $dbh->disconnect;
   }
-  elsif ($ARGV[0] eq "-d" ) {
+  elsif ( $ARGV[0] eq "-d" ) {
     # Delete a record from the database.
     my $ip_to_remove = $ARGV[1];
 
@@ -150,19 +150,39 @@ if (@ARGV ge 1) {
     }
     warn "Error: ", $sth->errstr( ), "\n" if $sth->err();
 
-    print "Are you sure you would like to remove this entry? [y/n]  ";
+    print "Are you sure you would like to remove this entry? [y/n]>  ";
     chomp( my $choice=<STDIN> );
     if ( $choice eq "y" || $choice eq "Y" ) {
       $query = "DELETE FROM `$table` WHERE id='$ip_to_remove'";
-      my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $sth->errstr;
+      my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
       $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
     }
     
     # Disconnect from the database now that we are done.
     $sth->finish;
     $dbh->disconnect;
+  }
+  elsif ( $ARGV[0] eq "-c" ) {
+    # Clear the database completely of all bans.
+    print "This will completely wipe the database of all bans!\nAre you Sure? [y/n]>  ";
+    chomp( my $choice=<STDIN> );
+
+    if ( $choice eq "y" || $choice eq "Y" ) {
+      # connect to MySQL database
+      my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
+        or die "Can't connect to database: $DBI::errstr\n";
+
+      my $query = "TRUNCATE TABLE `$table`";
+      my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
+      $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
+
+      $sth->finish;
+      $dbh->disconnect;
+
+      print "Database has been wiped!";
+    }
   }   
-  elsif ($ARGV[0] eq "-u") {
+  elsif ( $ARGV[0] eq "-u" ) {
     # Update the MaxMind database.
     if (-e $file) {
       # you should really backup the db first in case the download fails.
@@ -191,7 +211,8 @@ else {
         "  -l  : List the last 50 Bans.\n",
         "  -u  : Download the latest MaxMind GeoIP database.\n",
         "  -i  : Insert a new record into the database.\n",
-        "  -d  : Remove a record from the database.\n\n",
+        "  -d  : Remove a record from the database.\n",
+        "  -c  : Clear the database and start fresh.\n\n",
         " This program comes with ABSOLUTELY NO WARRANTY!\n",
         " This is free software, and you are welcome to redistribute it\n",
         " under certain conditions.\n";
