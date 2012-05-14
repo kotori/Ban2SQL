@@ -1,8 +1,7 @@
--- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
 --
 -- Host: localhost    Database: ban2sql
 -- ------------------------------------------------------
--- Server version	5.1.62-0ubuntu0.11.10.1
+--
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -58,4 +57,3 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-05-12 22:42:15
