@@ -133,7 +133,9 @@ if (@ARGV ge 1) {
     my $ip_to_remove = $ARGV[1];
 
     unless( $ip_to_remove ) {
-      die "Missing IP Address.\n";
+      print "Proper usage: ./ban2sql.pl -d <IP> \n\n",
+            " Example: ./ban2sql.pl -d 192.168.100.15 \n\n";
+      die;
     }
 
     # connect to MySQL database
