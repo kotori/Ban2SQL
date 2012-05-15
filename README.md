@@ -21,15 +21,20 @@ Installation
 </code></pre>
 
 2. Create ban2sql MySQL user to access ban2sql database (needs INSERT, UPDATE, DELETE)
+<pre><code>
    $ mysql -u'root' -p
    $ mysql> CREATE USER 'ban2sql_user'@'localhost' IDENTIFIED BY 'ban2sql_password';
    $ mysql> GRANT INSERT, UPDATE, DELETE, SELECT PRIVILEGES ON `ban2sql`.* to 'ban2sql_user'@'localhost';
+</code></pre>
 
 3. Create table by piping base.sql into mysql (mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql)
+<pre><code>
    $ mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql
-
+</code></pre>
    You can also populate your table with some sample data by piping data.sql into your new table.
+<pre><code>
    $ mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/data.sql
+</code></pre>
 
 4. Edit ban2sql.pl and change home path and sql login details at the top of the file.
 
@@ -39,9 +44,10 @@ Installation
    Usually the default action is 'banaction = iptables-multiport'
 
 Example for /etc/fail2ban/action.d/iptables-multiport.conf
-
+<pre><code>
 actionban = iptables -I fail2ban-<name> 1 -s <ip> -j DROP
             /etc/fail2ban/ban2sql/ban2sql.pl <name> <protocol> <port> <ip>
+</code></pre>
 
 =====
 Usage
