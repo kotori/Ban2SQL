@@ -1,7 +1,10 @@
 Ban2SQL 
 =======
 
-* * *
+Ban2SQL is a Fail2Ban plugin for logging attacks in a MySQL database for easy report building, and 
+mapping. This application makes use of the MaxMind GeoIP database for gathering geo data.
+
+
 ------------
 Requirements
 ------------
@@ -11,16 +14,16 @@ absolute requirement, it does automate the insertion of bans into the database. 
 in Perl, so there are a few modules you will need to install. File::Copy, Geo::IP::PurePerl, DBI,
 LWP::Simple, Archive::Extract, IO::Uncompress::Gunzip.
 
-* * *                          
+
 ------------
 Installation
 ------------
 
 1. Create a MySQL database called ban2sql (this step isn't necessary if you are sharing a db)
-<code>
+<pre><code>
    $ mysql -u'root' -p
    $ mysql> CREATE DATABASE `ban2sql`;
-</code>
+</code></pre>
 
 2. Create ban2sql MySQL user to access ban2sql database (needs INSERT, UPDATE, DELETE)
 <pre><code>
@@ -51,7 +54,6 @@ actionban = iptables -I fail2ban-&lt;name&gt; 1 -s &lt;ip&gt; -j DROP
             /etc/fail2ban/ban2sql/ban2sql.pl &lt;name&gt; &lt;protocol&gt; &lt;port&gt; &lt;ip&gt;
 </code></pre>
 
-* * *
 -----
 Usage
 -----
@@ -65,7 +67,7 @@ Usage
   -h  : The help menu.
 </code></pre>
 
-* * *
+
 -----
 Notes
 -----
@@ -113,7 +115,7 @@ MySQL Database Row Chart
   </tr>
 </table>
 
-* * *
+
 ---------------
 Contact/Credits
 ---------------
