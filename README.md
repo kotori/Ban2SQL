@@ -45,7 +45,7 @@ actionban = iptables -I fail2ban-<name> 1 -s <ip> -j DROP
 Usage
 =====
 <pre><code>
- Usage: ./ban2sql.pl <argument>
+ Usage: ./ban2sql.pl [argument]
   -l  : List the last 50 Bans.
   -u  : Download the latest MaxMind GeoIP database.
   -i  : Insert a new record into the database.
