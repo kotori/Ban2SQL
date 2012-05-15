@@ -116,6 +116,6 @@ Contact/Credits
 ---------------
 Ban2SQL by Kotori <kotori@greenskin.hopto.org>
 <br>
-Based off of Fail2SQL v1.0 by Jordan Tomkinson <jordan@moodle.com>
+Based off of Fail2SQL by Jordan Tomkinson <jordan@moodle.com>
 <br>
 Project Page: https://github.com/kotori/Ban2SQL
