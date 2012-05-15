@@ -17,20 +17,20 @@ LWP::Simple, Archive::Extract, IO::Uncompress::Gunzip.
 Installation
 ------------
 
-1. Create a MySQL database called ban2sql (this step isn't necessary if you are sharing a db)
+1. Create a MySQL database called `ban2sql` (this step isn't necessary if you are sharing a db)
 <pre><code>
    $ mysql -u'root' -p
    $ mysql> CREATE DATABASE `ban2sql`;
 </code></pre>
 
-2. Create ban2sql MySQL user to access ban2sql database (needs INSERT, UPDATE, DELETE)
+2. Create `ban2sql` MySQL user to access `ban2sql` database (needs <code>SELECT, INSERT, UPDATE, DELETE</code>)
 <pre><code>
    $ mysql -u'root' -p
    $ mysql> CREATE USER 'ban2sql_user'@'localhost' IDENTIFIED BY 'ban2sql_password';
-   $ mysql> GRANT INSERT, UPDATE, DELETE, SELECT PRIVILEGES ON `ban2sql`.* to 'ban2sql_user'@'localhost';
+   $ mysql> GRANT SELECT, INSERT, UPDATE, DELETE PRIVILEGES ON `ban2sql`.* to 'ban2sql_user'@'localhost';
 </code></pre>
 
-3. Create table by piping base.sql into mysql (mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql)
+3. Create table by piping base.sql into mysql (<code>mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql</code>)
 <pre><code>
    $ mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` &lt; sql/base.sql
 </code></pre>
@@ -41,12 +41,12 @@ Installation
 
 4. Edit ban2sql.pl and change home path and sql login details at the top of the file.
 
-5. Update Geo IP Database (./ban2sql.pl -u)
+5. Update Geo IP Database (<code>./ban2sql.pl -u</code>)
 
 6. Tell fail2ban to call ban2sql by appending to actionban in your action script.
    Usually the default action is 'banaction = iptables-multiport'
 
-Example for /etc/fail2ban/action.d/iptables-multiport.conf
+Example for <pre>/etc/fail2ban/action.d/iptables-multiport.conf</pre>
 <pre><code>
 actionban = iptables -I fail2ban-&lt;name&gt; 1 -s &lt;ip&gt; -j DROP
             /etc/fail2ban/ban2sql/ban2sql.pl &lt;name&gt; &lt;protocol&gt; &lt;port&gt; &lt;ip&gt;
