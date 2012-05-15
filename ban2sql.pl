@@ -204,18 +204,22 @@ if ( @ARGV ge 1 ) {
       print "Error Downloading new database. \nTry Again in 24Hours. \n";
     }
   }
-}
-else {
+  elsif ( $ARGV[0] eq "-h" ) {
   print "Ban2SQL\n",
         " Usage: ./ban2sql.pl <argument>\n",
         "  -l  : List the last 50 Bans.\n",
         "  -u  : Download the latest MaxMind GeoIP database.\n",
         "  -i  : Insert a new record into the database.\n",
         "  -d  : Remove a record from the database.\n",
-        "  -c  : Clear the database and start fresh.\n\n",
+        "  -c  : Clear the database and start fresh.\n",
+        "  -h  : This help menu.\n\n",
         " This program comes with ABSOLUTELY NO WARRANTY!\n",
         " This is free software, and you are welcome to redistribute it\n",
         " under certain conditions.\n";
+  }
+}
+else {
+    print "Ban2SQL\nUsage: ./ban2sql.pl -[l|u|i|d|c|h]\n";
 }
 
 exit 0;

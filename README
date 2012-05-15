@@ -1,8 +1,4 @@
- ____              ____  ____   ___  _     
-| __ )  __ _ _ __ |___ \/ ___| / _ \| |    
-|  _ \ / _` | '_ \  __) \___ \| | | | |    
-| |_) | (_| | | | |/ __/ ___) | |_| | |___ 
-|____/ \__,_|_| |_|_____|____/ \__\_\_____| v1.0.0
+Ban2SQL 
                                            
 ============
 Installation
@@ -17,8 +13,11 @@ Installation
    $ mysql> CREATE USER 'ban2sql_user'@'localhost' IDENTIFIED BY 'ban2sql_password';
    $ mysql> GRANT INSERT, UPDATE, DELETE, SELECT PRIVILEGES ON `ban2sql`.* to 'ban2sql_user'@'localhost';
 
-3. Create table by piping ban2sql.sql into mysql (mysql -u ban2sql_user -p `ban2sql` < sql/ban2sql.sql)
-   $ mysql -u'root' -p `ban2sql` < sql/ban2sql.sql
+3. Create table by piping base.sql into mysql (mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql)
+   $ mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/base.sql
+
+   You can also populate your table with some sample data by piping data.sql into your new table.
+   $ mysql -u'ban2sql_user' -p'ban2sql_password' `ban2sql` < sql/data.sql
 
 4. Edit ban2sql.pl and change home path and sql login details at the top of the file.
 
@@ -36,14 +35,13 @@ actionban = iptables -I fail2ban-<name> 1 -s <ip> -j DROP
 Usage
 =====
 
-./ban2sql.pl [-h|-l|-i|-d|-c|-u]
-	-h: The help page
-	-l: List entries in the database (max 50 shown).
-        -i: Insert an IP into the database.
-        -d: Delete an IP from the database.
-	-c: Clear the database and start fresh.
-	-u: Update GeoIP database (downloads from maxmind).
-
+ Usage: ./ban2sql.pl <argument>
+  -l  : List the last 50 Bans.
+  -u  : Download the latest MaxMind GeoIP database.
+  -i  : Insert a new record into the database.
+  -d  : Remove a record from the database.
+  -c  : Clear the database and start fresh.
+  -h  : The help menu.
 
 =====
 Notes
