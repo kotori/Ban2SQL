@@ -45,7 +45,7 @@ Installation
 
 Example for /etc/fail2ban/action.d/iptables-multiport.conf
 <pre><code>
-actionban = iptables -I fail2ban-<name> 1 -s <ip> -j DROP
+actionban = iptables -I fail2ban-<name> 1 -s &lt;ip&gt; -j DROP
             /etc/fail2ban/ban2sql/ban2sql.pl <name> <protocol> <port> <ip>
 </code></pre>
 
