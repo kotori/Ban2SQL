@@ -15,8 +15,10 @@ Installation
 ============
 
 1. Create a MySQL database called ban2sql (this step isn't necessary if you are sharing a db)
+<pre><code>
    $ mysql -u'root' -p
    $ mysql> CREATE DATABASE `ban2sql`;
+</code></pre>
 
 2. Create ban2sql MySQL user to access ban2sql database (needs INSERT, UPDATE, DELETE)
    $ mysql -u'root' -p
