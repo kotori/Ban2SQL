@@ -1,24 +1,26 @@
 Ban2SQL 
+=======
 
-============
+* * *
+------------
 Requirements
-============
+------------
 
 There are a couple of requirements prior to running Ban2SQL. First is Fail2Ban, while its not an 
 absolute requirement, it does automate the insertion of bans into the database. Ban2SQL was written 
 in Perl, so there are a few modules you will need to install. File::Copy, Geo::IP::PurePerl, DBI,
 LWP::Simple, Archive::Extract, IO::Uncompress::Gunzip.
 
-                               
-============
+* * *                          
+------------
 Installation
-============
+------------
 
 1. Create a MySQL database called ban2sql (this step isn't necessary if you are sharing a db)
-<pre><code>
+<code>
    $ mysql -u'root' -p
    $ mysql> CREATE DATABASE `ban2sql`;
-</code></pre>
+</code>
 
 2. Create ban2sql MySQL user to access ban2sql database (needs INSERT, UPDATE, DELETE)
 <pre><code>
@@ -49,9 +51,10 @@ actionban = iptables -I fail2ban-&lt;name&gt; 1 -s &lt;ip&gt; -j DROP
             /etc/fail2ban/ban2sql/ban2sql.pl &lt;name&gt; &lt;protocol&gt; &lt;port&gt; &lt;ip&gt;
 </code></pre>
 
-=====
+* * *
+-----
 Usage
-=====
+-----
 <pre><code>
  Usage: ./ban2sql.pl &lt;argument&gt;
   -l  : List the last 50 Bans.
@@ -62,9 +65,10 @@ Usage
   -h  : The help menu.
 </code></pre>
 
-=====
+* * *
+-----
 Notes
-=====
+-----
 
 Incase its not immediately obvious, here is a breakdown of how the database is built.
 This might be handy incase you would like to tweak the application (add db rows, etc).
@@ -110,10 +114,9 @@ MySQL Database Row Chart
 </table>
 
 * * *
-
-===============
+---------------
 Contact/Credits
-===============
+---------------
 Ban2SQL v2.0 by Kotori <kotori@greenskin.hopto.org>
 <br>
 Based off of Fail2SQL v1.0 by Jordan Tomkinson <jordan@moodle.com>
