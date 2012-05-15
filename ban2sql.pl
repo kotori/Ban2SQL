@@ -31,7 +31,7 @@ use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 #### begin user config ####
 
 # Path to the ban2sql installation
-my $home = '/etc/fail2ban/ban2sql';
+my $home = '/etc/fail2ban/Ban2SQL';
 
 # Path to the GeoLiteCity.dat database from MaxMind.
 my $url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
