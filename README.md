@@ -114,7 +114,7 @@ MySQL Database Row Chart
 
 Contact/Credits
 ---------------
-Ban2SQL v2.0 by Kotori <kotori@greenskin.hopto.org>
+Ban2SQL by Kotori <kotori@greenskin.hopto.org>
 <br>
 Based off of Fail2SQL v1.0 by Jordan Tomkinson <jordan@moodle.com>
 <br>
