@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #######################################################################
-# Ban2SQL v1.0.0 by Kotori <kotori@greenskin.hopto.org>               #
+# Ban2SQL v2.0 by Kotori <kotori@greenskin.hopto.org>                 #
 #  When this application is called via Fail2Ban, it places the ban,   #
 #   and geo location data in a specified database for easy retrieval. #
 #                                                                     #
@@ -88,7 +88,7 @@ if ( @ARGV ge 1 ) {
       my ($service_name, $service_alias, $service_port, $service_protocol) = getservbyname($ban_port, $ban_protocol);
       
       # Build the query to insert the ban into the database.
-      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region -- $country_name', NOW(), NOW())";
+      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $country_name  $postal_code', NOW(), NOW())";
       
       # Prepare the query we just built.
       my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
