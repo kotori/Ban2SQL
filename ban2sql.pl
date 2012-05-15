@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #######################################################################
-# Ban2SQL v2.0 by Kotori <kotori@greenskin.hopto.org>                 #
+# Ban2SQL v1.0.0 by Kotori <kotori@greenskin.hopto.org>               #
 #  When this application is called via Fail2Ban, it places the ban,   #
 #   and geo location data in a specified database for easy retrieval. #
 #                                                                     #
