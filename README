@@ -1,5 +1,15 @@
 Ban2SQL 
-                                           
+
+============
+Requirements
+============
+
+There are a couple of requirements prior to running Ban2SQL. First is Fail2Ban, while its not an 
+absolute requirement, it does automate the insertion of bans into the database. Ban2SQL was written 
+in Perl, so there are a few modules you will need to install. File::Copy, Geo::IP::PurePerl, DBI,
+LWP::Simple, Archive::Extract, IO::Uncompress::Gunzip.
+
+                               
 ============
 Installation
 ============
@@ -51,19 +61,44 @@ Incase its not immediately obvious, here is a breakdown of how the database is b
 This might be handy incase you would like to tweak the application (add db rows, etc).
 
 MySQL Database Row Chart
-Row ID    Row Name         Row Meaning
-row[1]:   name             Service being attacked. (ssh, ftp, etc..)
-row[2]:   protocol         Protocol this attack is taking place over.
-row[3]:   port             Port number this service attack is taking place on.
-row[4]:   ip               IP address of the attacker.
-row[5]:   count            Number of attempts this ip has made.
-row[6]:   longitude        Geolocational longitude of attacker.
-row[7]:   latitude         Geolocational latitude of attacker.
-row[8]:   country          Country this attacker originates from (2 letters).
-row[9]:   geo              More specific regional information about this attacker.
-row[10]:  date_last_seen   Date/Time of latest ban
-row[11]:  date_first_seen  Date/Time of first ban
-
+<table>
+  <tr>
+    <th>Row ID</th><th>Row Name</th><th>Row Meaning</th>
+  </tr>
+  <tr>
+    <td>1</td><td>name</td><td>Service being attacked (ssh, ftp, etc..)</td>
+  </tr>
+  <tr>
+    <td>2</td><td>protocol</td><td>Protocol this attack is taking place over</td>
+  </tr>
+  <tr>
+    <td>3</td><td>port</td><td>Port number this service attack is taking place on</td>
+  </tr>
+  <tr>
+    <td>4</td><td>ip</td><td>IP address of the attacker</td>
+  </tr>
+  <tr>
+    <td>5</td><td>count</td><td>Number of attempts this ip has made</td>
+  </tr>
+  <tr>
+    <td>6</td><td>longitude</td><td>Geolocational longitude of attacker</td>
+  </tr>
+  <tr>
+    <td>7</td><td>latitude</td><td>Geolocational latitude of attacker</td>
+  </tr>
+  <tr>
+    <td>8</td><td>country</td><td>Country this attacker originates from (2 letters)</td>
+  </tr>
+  <tr>
+    <td>9</td><td>geo</td><td>More specific regional information about this attacker</td>
+  </tr>
+  <tr>
+    <td>10</td><td>date_last_seen</td><td>Date/Time of latest ban</td>
+  </tr>
+  <tr>
+    <td>11</td><td>date_first_seen</td><td>Date/Time of first ban</td>
+  </tr>
+</table>
 
 
 ===============
