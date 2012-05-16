@@ -7,11 +7,6 @@
 #                                                                     #
 #  Inspired by Fail2SQL by Jordan Tomkinson <jordan@moodle.com>       #
 #                                                                     #
-# Requirements:                                                       #
-#  Fail2Ban, MySQL, Perl, GeoIP perl lib,                             #
-#  DBI perl lib, LWP::Simple perl lib,                                #
-#  Archive::Extract perl lib, File::Copy perl lib                     #
-#                                                                     #
 # Ban2SQL is free software; you can redistribute it and/or modify     #
 #  it under the terms of the GNU General Public License as published  #
 #  by the Free Software Foundation; either version 2 of the License,  #
@@ -54,12 +49,13 @@ my $table = 'ban2sql';		# table containing bans.
 if ( @ARGV ge 1 ) {
   if ( $ARGV[0] eq "-i" ) {
     # This should really only occur if Fail2Ban calls it, however you can also use -i to manually enter in a ban.
-    # /etc/fail2ban/ban2sql/ban2sql.pl -i <name> <protocol> <port> <ip>
+    # /etc/fail2ban/Ban2SQL/ban2sql.pl -i <name> <protocol> <port> <ip>
 
-    my $ban_name = $ARGV[1];
-    my $ban_protocol = $ARGV[2];
-    my $ban_port = $ARGV[3];
-    my $ban_ip = $ARGV[4];
+				# Values from Fail2Ban
+    my $ban_name = $ARGV[1];	# <name>
+    my $ban_protocol = $ARGV[2];# <protocol>
+    my $ban_port = $ARGV[3];	# <port>
+    my $ban_ip = $ARGV[4];	# <ip>
  
     # connect to MySQL database
     my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
