@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #######################################################################
-# Ban2SQL v1.0.1 by Kotori <kotori@greenskin.hopto.org>               #
+# Ban2SQL v1.0.2 by Kotori <kotori@greenskin.hopto.org>               #
 #  When this application is called via Fail2Ban, it places the ban,   #
 #   and geo location data in a specified database for easy retrieval. #
 #                                                                     #
@@ -57,11 +57,6 @@ if ( @ARGV ge 1 ) {
     my $ban_port = $ARGV[3];	# <port>
     my $ban_ip = $ARGV[4];	# <ip>
 
-    print "Ban Name: " . $ban_name . "\n";
-    print "Ban Protocol: " . $ban_protocol . "\n";
-    print "Ban Port: " . $ban_port . "\n";
-    print "Ban IP: " . $ban_ip . "\n";
- 
     # connect to MySQL database
     my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
       or die "Can't connect to database: $DBI::errstr\n";
@@ -90,10 +85,6 @@ if ( @ARGV ge 1 ) {
 
       # Grab the port number from the service name passed by fail2ban.
       my ($service_name, $service_alias, $service_port, $service_protocol) = getservbyname($ban_name, $ban_protocol);
-      print "Service Name: " . $service_name . "\n";
-      print "Service Alias: " . $service_alias . "\n";
-      print "Service Port: " . $service_port . "\n";
-      print "Service Protocol: " . $service_protocol . "\n";
       
       # Build the query to insert the ban into the database.
       my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
