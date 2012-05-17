@@ -56,6 +56,11 @@ if ( @ARGV ge 1 ) {
     my $ban_protocol = $ARGV[2];# <protocol>
     my $ban_port = $ARGV[3];	# <port>
     my $ban_ip = $ARGV[4];	# <ip>
+
+    print "Ban Name: " . $ban_name . "\n";
+    print "Ban Protocol: " . $ban_protocol . "\n";
+    print "Ban Port: " . $ban_port . "\n";
+    print "Ban IP: " . $ban_ip . "\n";
  
     # connect to MySQL database
     my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
@@ -77,14 +82,21 @@ if ( @ARGV ge 1 ) {
       my $gi = Geo::IP::PurePerl->open( $final, GEOIP_STANDARD )
         or die "Failed to open GeoIP database, check $final";
 
+      # Not all variables below will actually hold a variable.
+      #no warnings 'uninitialized';
+
       # Assign the geo location data into the following variables for ban_ip
       my ($country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$metro_code,$area_code) = $gi->get_city_record( $ban_ip );
 
       # Grab the port number from the service name passed by fail2ban.
-      my ($service_name, $service_alias, $service_port, $service_protocol) = getservbyname($ban_port, $ban_protocol);
+      my ($service_name, $service_alias, $service_port, $service_protocol) = getservbyname($ban_name, $ban_protocol);
+      print "Service Name: " . $service_name . "\n";
+      print "Service Alias: " . $service_alias . "\n";
+      print "Service Port: " . $service_port . "\n";
+      print "Service Protocol: " . $service_protocol . "\n";
       
       # Build the query to insert the ban into the database.
-      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $country_name  $postal_code', NOW(), NOW())";
+      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
       
       # Prepare the query we just built.
       my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
