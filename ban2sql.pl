@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -Tw
 
 #######################################################################
-# Ban2SQL v1.0.2 by Kotori <kotori@greenskin.hopto.org>               #
+# Ban2SQL v1.0.3 by Kotori <kotori@greenskin.hopto.org>               #
 #  When this application is called via Fail2Ban, it places the ban,   #
 #   and geo location data in a specified database for easy retrieval. #
 #                                                                     #
@@ -14,7 +14,6 @@
 #######################################################################
 
 use strict;
-use warnings;
 
 use File::Copy;
 use Geo::IP::PurePerl;
@@ -29,6 +28,7 @@ use IO::Uncompress::Gunzip qw(gunzip $GunzipError);
 my $home = '/etc/fail2ban/Ban2SQL';
 
 # Path to the GeoLiteCity.dat database from MaxMind.
+#  Please don't abuse this URL. This is a free version of the database, with limited bandwidth.
 my $url = 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz';
 
 # Filename to use when extracting. (should be obvious from the url)
@@ -46,64 +46,10 @@ my $table = 'ban2sql';		# table containing bans.
 
 #### end user config ####
 
-if ( @ARGV ge 1 ) {
-  if ( $ARGV[0] eq "-i" ) {
-    # This should really only occur if Fail2Ban calls it, however you can also use -i to manually enter in a ban.
-    # /etc/fail2ban/Ban2SQL/ban2sql.pl -i <name> <protocol> <port> <ip>
-
-				# Values from Fail2Ban
-    my $ban_name = $ARGV[1];	# <name>
-    my $ban_protocol = $ARGV[2];# <protocol>
-    my $ban_port = $ARGV[3];	# <port>
-    my $ban_ip = $ARGV[4];	# <ip>
-
-    # connect to MySQL database
-    my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
-      or die "Can't connect to database: $DBI::errstr\n";
-
-    my ($count) = $dbh->selectrow_array("SELECT count FROM `$table` WHERE ip = '$ban_ip'");
-
-    # Ensure this IP doesn't already exist in the database.
-    if(defined $count) {
-      # if the record already exists, simply update the counter, and last seen time.
-      my $query = "UPDATE `$table` SET count=count+1, date_last_seen=NOW() WHERE ip = '$ban_ip'";
-      my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
-      $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;      
-
-      $sth->finish;
-    }
-    else {
-      # Open GeoIP lookup database.
-      my $gi = Geo::IP::PurePerl->open( $final, GEOIP_STANDARD )
-        or die "Failed to open GeoIP database, check $final";
-
-      # Not all variables below will actually hold a variable.
-      #no warnings 'uninitialized';
-
-      # Assign the geo location data into the following variables for ban_ip
-      my ($country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$metro_code,$area_code) = $gi->get_city_record( $ban_ip );
-
-      # Grab the port number from the service name passed by fail2ban.
-      my ($service_name, $service_alias, $service_port, $service_protocol) = getservbyname($ban_name, $ban_protocol);
-      
-      # Build the query to insert the ban into the database.
-      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
-      
-      # Prepare the query we just built.
-      my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
-      # Execute the query
-      $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
-        
-      $sth->finish;
-    }
-
-    # Disconnect from the database now that we are done.
-    $dbh->disconnect;
-
-  }
-  elsif ( $ARGV[0] eq "-l" ) {
+sub ListBans
+{
     #connect to MySQL database
-    my $dbh = DBI->connect("DBI:mysql:database=$db:host=$host", $user, $pw)
+    my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
       or die "Can't connect to database: $DBI::errstr \n";
 
     # Prints results
@@ -112,7 +58,7 @@ if ( @ARGV ge 1 ) {
     # Pull top 50 bans
     my $query = "SELECT * FROM `$table` ORDER BY count DESC LIMIT 50";
     # my $query = "SELECT * FROM `fail2ban-perl` ORDER BY count DESC LIMIT 50";
-    my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
+    my $sth = $dbh->prepare( $query ) or die "Failed to Prepare $query \n" . $dbh->errstr;
     $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
 
     while (my @row = $sth->fetchrow_array()) {
@@ -123,8 +69,67 @@ if ( @ARGV ge 1 ) {
     # Disconnect from the database now that we are done.
     $sth->finish;
     $dbh->disconnect;
-  }
-  elsif ( $ARGV[0] eq "-d" ) {
+
+}
+
+# Insert a new ban into the MySQL database.
+sub InsertBan
+{
+                                # Values from Fail2Ban
+    my $ban_name = $ARGV[1];    # <name>
+    my $ban_protocol = $ARGV[2];# <protocol>
+    my $ban_port = $ARGV[3];    # <port>
+    my $ban_ip = $ARGV[4];      # <ip>
+
+    # connect to MySQL database
+    my $dbh = DBI->connect( "DBI:mysql:database=$db:host=$host", $user, $pw )
+      or die "Can't connect to database: $DBI::errstr\n";
+
+    my ( $count ) = $dbh->selectrow_array( "SELECT count FROM `$table` WHERE ip = '$ban_ip'" );
+
+    # Ensure this IP doesn't already exist in the database.
+    if ( defined $count )
+    {
+      # if the record already exists, simply update the counter, and last seen time.
+      my $query = "UPDATE `$table` SET count=count+1, date_last_seen=NOW() WHERE ip = '$ban_ip'";
+      my $sth = $dbh->prepare( $query ) or die "Failed to Prepare $query \n" . $dbh->errstr;
+      $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
+
+      $sth->finish;
+    }
+    else
+    {
+      # Open GeoIP lookup database.
+      my $gi = Geo::IP::PurePerl->open( $final, GEOIP_STANDARD )
+        or die "Failed to open GeoIP database, check $final";
+
+      # Not all variables below will actually hold a variable.
+      #no warnings 'uninitialized';
+
+      # Assign the geo location data into the following variables for ban_ip
+      my ( $country_code,$country_code3,$country_name,$region,$city,$postal_code,$latitude,$longitude,$metro_code,$area_code ) = $gi->get_city_record( $ban_ip );
+
+      # Grab the port number from the service name passed by fail2ban.
+      # This appears to be where the BUG is introduced. When a port range is passed instead of a single port, we get a Fail2Ban error.
+      my ( $service_name, $service_alias, $service_port, $service_protocol ) = getservbyname( $ban_name, $ban_protocol );
+
+      # Build the query to insert the ban into the database.
+      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
+
+      # Prepare the query we just built.
+      my $sth = $dbh->prepare( $query ) or die "Failed to Prepare $query \n" . $dbh->errstr;
+      # Execute the query
+      $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
+
+      $sth->finish;
+    }
+
+    # Disconnect from the database now that we are done.
+    $dbh->disconnect;
+}
+
+sub RemoveBan
+{
     # Delete a record from the database.
     my $ip_to_remove = $ARGV[1];
 
@@ -143,7 +148,8 @@ if ( @ARGV ge 1 ) {
     my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
     $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
     
-    while ( my @row = $sth->fetchrow_array() ) {
+    while ( my @row = $sth->fetchrow_array() )
+    {
       print "$sth->{NAME}->[1]\t$sth->{NAME}->[4]\t\t$sth->{NAME}->[5]\t$sth->{NAME}->[9]\t\t\t$sth->{NAME}->[10]\t\t$sth->{NAME}->[11]\n";
       print "$row[1]\t$row[4]\t$row[5]\t$row[9]\t\t$row[10]\t$row[11] \n";
     }
@@ -151,7 +157,8 @@ if ( @ARGV ge 1 ) {
 
     print "Are you sure you would like to remove this entry? [y/n]>  ";
     chomp( my $choice=<STDIN> );
-    if ( $choice eq "y" || $choice eq "Y" ) {
+    if ( $choice eq "y" || $choice eq "Y" )
+    {
       $query = "DELETE FROM `$table` WHERE id='$ip_to_remove'";
       my $sth = $dbh->prepare($query) or die "Failed to Prepare $query \n" . $dbh->errstr;
       $sth->execute or die "Couldn't Execute MySQL Statement: $query \n" . $sth->errstr;
@@ -160,8 +167,10 @@ if ( @ARGV ge 1 ) {
     # Disconnect from the database now that we are done.
     $sth->finish;
     $dbh->disconnect;
-  }
-  elsif ( $ARGV[0] eq "-c" ) {
+}
+
+sub ClearDatabase
+{
     # Clear the database completely of all bans.
     print "This will completely wipe the database of all bans!\nAre you Sure? [y/n]>  ";
     chomp( my $choice=<STDIN> );
@@ -180,10 +189,14 @@ if ( @ARGV ge 1 ) {
 
       print "Database has been wiped!";
     }
-  }   
-  elsif ( $ARGV[0] eq "-u" ) {
-    # Update the MaxMind database.
-    if (-e $file) {
+}
+
+# Update the MaxMind GeoIP database
+sub UpdateGeoIP
+{
+    # First we will ensure if the database exists, back it up first.
+    if ( -e $file )
+    {
       # you should really backup the db first in case the download fails.
       my $backup_filename = $file . '.bak';
       copy( $file, $backup_filename );
@@ -195,16 +208,20 @@ if ( @ARGV ge 1 ) {
     getstore ( $url, $file ) or die 'Unable to get $url';
 
     # Make sure the database actually downloaded, and ungzip it, rename the database to final
-    if (-e $file) {
+    if (-e $file)
+    {
       gunzip $file => $final or die "gunzip failed: $GunzipError\n";
       unlink( $file ) or die "Failure to Remove file: $file";
     }
-    else {
+    else
+    {
       print "Error Downloading new database. \nTry Again in 24Hours. \n";
     }
-  }
-  elsif ( $ARGV[0] eq "-h" ) {
-  print "Ban2SQL\n",
+}
+
+sub CommandHelp
+{
+    print "Ban2SQL\n",
         " Usage: ./ban2sql.pl <argument>\n",
         "  -l  : List the last 50 Bans.\n",
         "  -u  : Download the latest MaxMind GeoIP database.\n",
@@ -215,9 +232,37 @@ if ( @ARGV ge 1 ) {
         " This program comes with ABSOLUTELY NO WARRANTY!\n",
         " This is free software, and you are welcome to redistribute it\n",
         " under certain conditions.\n";
+}
+
+if ( @ARGV ge 1 )
+{
+  if ( $ARGV[0] eq "-i" )
+  {
+    InsertBan();
+  }
+  elsif ( $ARGV[0] eq "-l" )
+  {
+    ListBans();
+  }
+  elsif ( $ARGV[0] eq "-d" )
+  {
+    RemoveBan();
+  }
+  elsif ( $ARGV[0] eq "-c" )
+  {
+    ClearDatabase();
+  }   
+  elsif ( $ARGV[0] eq "-u" )
+  {
+    UpdateGeoIP();
+  }
+  elsif ( $ARGV[0] eq "-h" )
+  {
+    CommandHelp();
   }
 }
-else {
+else
+{
     print "Ban2SQL\nUsage: ./ban2sql.pl -[l|u|i|d|c|h]\n";
 }
 

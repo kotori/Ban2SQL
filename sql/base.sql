@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `ban2sql`;
 CREATE TABLE `ban2sql` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
-  `protocol` varchar(4) NOT NULL,
+  `protocol` varchar(10) NOT NULL,
   `port` int(11) NOT NULL,
   `ip` varchar(20) NOT NULL,
   `count` int(11) NOT NULL,
