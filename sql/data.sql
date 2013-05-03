@@ -1,9 +1,9 @@
 --
--- Dumping data for table `ban2sql`
+-- Dumping data for table `bans`
 --
 
-LOCK TABLES `ban2sql` WRITE;
-INSERT INTO `ban2sql` VALUES 
+LOCK TABLES `bans` WRITE;
+INSERT INTO `bans` VALUES 
 	(1,'ssh','tcp',22,'61.155.178.242',1,'105','35','CN',', China  ','2012-05-15 17:06:23','2012-05-15 17:06:23'),
 	(2,'ssh','tcp',22,'202.120.189.227',1,'121.3997','31.0456','CN','Shanghai, China  ','2012-05-15 17:06:26','2012-05-15 17:06:26'),
 	(3,'ssh','tcp',22,'59.49.21.230',1,'116.3883','39.9289','CN','Beijing, China  ','2012-05-15 17:06:29','2012-05-15 17:06:29'),

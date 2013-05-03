@@ -1,9 +1,9 @@
 --
--- Table structure for table `ban2sql`
+-- Table structure for table `bans`
 --
 
-DROP TABLE IF EXISTS `ban2sql`;
-CREATE TABLE `ban2sql` (
+DROP TABLE IF EXISTS `bans`;
+CREATE TABLE `bans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   `protocol` varchar(10) NOT NULL,
