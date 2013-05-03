@@ -44,6 +44,8 @@ my $tmpdb = $install_dir . '/GeoLiteCity.dat.gz';
 # Filename to use when extracted. (if you are using geolite city, keep this value as is)
 my $geodb = $install_dir . '/GeoLiteCity.dat';
 
+my $debug_mode = 0;
+
 #### end user config ####
 
 # Display the last 50 bans in the database.
@@ -127,6 +129,17 @@ sub InsertBan
           $service_alias,
           $service_port,
           $service_protocol ) = getservbyname( $ban_name, $ban_protocol ); 
+
+      if ( $debug_mode ge 1 )
+      {
+        print "Inserting New Ban into the database:";
+        print "Ban Name: " . $ban_name;
+        print "Ban Protocol: " . $ban_protocol;
+        print "Service Name: " . $service_name;
+        print "Service Alias: " . $service_alias;
+        print "Service Port: " . $service_port;
+        print "Service Proto: " . $service_protocol;
+      }
 
       # Build the query to insert the ban into the database.
       my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
