@@ -120,8 +120,16 @@ sub InsertBan
           $area_code
           ) = $gi->get_city_record( $ban_ip );
 
+      # Grab the port number from the service name passed by fail2ban.
+      # This appears to be where the BUG is introduced. When a port range is passed instead of a single port, we get a Fail2Ban error.
+      my (
+          $service_name,
+          $service_alias,
+          $service_port,
+          $service_protocol ) = getservbyname( $ban_name, $ban_protocol ); 
+
       # Build the query to insert the ban into the database.
-      my $query = "INSERT INTO `$table` values ('', '$service_name', '$ban_name', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
+      my $query = "INSERT INTO `$table` values ('', '$service_name', '$service_protocol', '$service_port', '$ban_ip', '1', '$longitude', '$latitude','$country_code', '$city, $region  - $country_name', NOW(), NOW())";
 
       # Prepare the query we just built.
       my $sth = $dbh->prepare( $query ) or die "Failed to Prepare $query \n" . $dbh->errstr;
